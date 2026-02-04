@@ -91,13 +91,15 @@ A complete Nix flake has been added to enable building and running Flightmare on
 
 ## Files Modified
 
-### 1. `flightlib/CMakeLists.txt`
+### 1. `flightlib/CMakeLists.txt`, `flightrender/CMakeLists.txt`, `flightros/CMakeLists.txt`
 **Changes:**
 - Fixed typo: `EIGEN_FROM_SYSTTEM` → `EIGEN_FROM_SYSTEM`
+- Updated CMake minimum version: `3.0` → `3.5`
 
 **Impact:**
 - Allows CMake to correctly use system-provided Eigen
 - Prevents unnecessary downloading of Eigen during build
+- Compatible with modern CMake versions (3.27+) that removed support for < 3.5
 - Benefits all build methods, not just Nix
 
 ### 2. `README.md`

@@ -8,6 +8,7 @@ This repository includes a Nix flake for building and running Flightmare on NixO
 
 - NixOS 25.11 or later, or any system with Nix installed
 - Nix flakes enabled (add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf`)
+- CMake 3.5 or later (automatically provided by Nix)
 
 ### Building
 
