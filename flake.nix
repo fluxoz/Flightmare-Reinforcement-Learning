@@ -41,7 +41,7 @@
           owner = "google";
           repo = "googletest";
           rev = "release-1.12.1";
-          sha256 = "sha256-D5NiOoZ8iCJPyiOX3N+TyGI0PiTpH1ck6FGa4SZLCY8=";
+          sha256 = "sha256-W+OxRTVtemt2esw4P7IyGWXOonUN5ZuscjvzqkYvZbM=";
         };
         
         # Build flightlib (C++ library with Python bindings)
