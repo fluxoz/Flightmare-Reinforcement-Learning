@@ -33,19 +33,26 @@
             export FLIGHTMARE_PATH=$(realpath ..)
             # Create necessary directories
             mkdir -p build externals
+            # Set git config for downloads
+            export GIT_SSL_CAINFO="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
           '';
           
           # Patch the setup.py to be more Nix-friendly
           postPatch = ''
-            # Remove the parts that try to delete files
-            sed -i '/shutil.rmtree/d' setup.py
-            sed -i '/Removing some cache/d' setup.py
+            # Replace the shutil.rmtree calls with pass to maintain syntax
+            sed -i 's/shutil\.rmtree(p)/pass  # removed for Nix build/' setup.py
+            sed -i 's/print("Removing some cache file: ", p)/pass  # removed for Nix build/' setup.py
           '';
+          
+          # Allow network access for external project downloads
+          __noChroot = true;
 
           nativeBuildInputs = with pkgs; [
             cmake
             pkg-config
             gcc
+            git  # Needed for CMake ExternalProject downloads
+            cacert  # Needed for SSL certificate verification
           ];
 
           buildInputs = with pkgs; [
@@ -80,6 +87,8 @@
           preBuild = ''
             export NIX_CFLAGS_COMPILE="-I${pkgs.eigen}/include/eigen3 $NIX_CFLAGS_COMPILE"
             export CMAKE_PREFIX_PATH="${pkgs.eigen}:${pkgs.opencv}:${pkgs.yaml-cpp}:${pkgs.zeromq}:$CMAKE_PREFIX_PATH"
+            # Ensure we're in the source root for setup.py
+            cd $sourceRoot || cd ..
           '';
 
           meta = with pkgs.lib; {
@@ -223,13 +232,14 @@
             '');
           };
         };
-
-        # Provide an overlay for other flakes to use
-        overlays.default = final: prev: {
-          flightmare = pythonEnv;
-          flightlib = flightlib;
-          flightrl_v2 = flightrl_v2;
-        };
       }
-    );
+    ) // {
+      # Overlays at the top level (not per-system)
+      overlays.default = final: prev: {
+        flightmare = prev.python311.withPackages (ps: [
+          (ps.callPackage ./flightlib {})
+          (ps.callPackage ./flightrl_v2 {})
+        ]);
+      };
+    };
 }
