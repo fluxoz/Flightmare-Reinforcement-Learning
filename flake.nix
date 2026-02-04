@@ -20,6 +20,30 @@
         python = pkgs.python311;
         pythonPackages = python.pkgs;
         
+        # Fetch pybind11 source for CMake
+        pybind11Src = pkgs.fetchFromGitHub {
+          owner = "pybind";
+          repo = "pybind11";
+          rev = "v2.11.1";
+          sha256 = "sha256-sO/Fa+QrAKyq2EYyYMcjPrYI+bdJIrDoj6L3JHoDo3E=";
+        };
+        
+        # Fetch yaml-cpp source for CMake
+        yamlCppSrc = pkgs.fetchFromGitHub {
+          owner = "jbeder";
+          repo = "yaml-cpp";
+          rev = "yaml-cpp-0.7.0";
+          sha256 = "sha256-2tFWccifn0c2lU/U1WNg2FHrBohjx8CXMllPJCevaNk=";
+        };
+        
+        # Fetch googletest source for CMake
+        gtestSrc = pkgs.fetchFromGitHub {
+          owner = "google";
+          repo = "googletest";
+          rev = "release-1.12.1";
+          sha256 = "sha256-D5NiOoZ8iCJPyiOX3N+TyGI0PiTpH1ck6FGa4SZLCY8=";
+        };
+        
         # Build flightlib (C++ library with Python bindings)
         flightlib = pythonPackages.buildPythonPackage rec {
           pname = "flightgym";
@@ -33,8 +57,19 @@
             export FLIGHTMARE_PATH=$(realpath ..)
             # Create necessary directories
             mkdir -p build externals
-            # Set git config for downloads
-            export GIT_SSL_CAINFO="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            
+            # Copy pre-fetched sources to externals directory
+            cp -r ${pybind11Src} externals/pybind11-src
+            chmod -R +w externals/pybind11-src
+            
+            cp -r ${yamlCppSrc} externals/yaml-cpp-src
+            chmod -R +w externals/yaml-cpp-src
+            
+            cp -r ${gtestSrc} externals/gtest-src
+            chmod -R +w externals/gtest-src
+            
+            # Patch yaml-cpp's CMakeLists.txt to use CMake 3.12
+            sed -i 's/cmake_minimum_required(VERSION 3\.4)/cmake_minimum_required(VERSION 3.12)/' externals/yaml-cpp-src/CMakeLists.txt
           '';
           
           # Patch the setup.py to be more Nix-friendly
@@ -42,17 +77,23 @@
             # Replace the shutil.rmtree calls with pass to maintain syntax
             sed -i 's/shutil\.rmtree(p)/pass  # removed for Nix build/' setup.py
             sed -i 's/print("Removing some cache file: ", p)/pass  # removed for Nix build/' setup.py
+            
+            # Patch CMakeLists.txt to skip external project downloads
+            # Comment out the external project includes
+            sed -i '/include(cmake\/pybind11.cmake)/d' CMakeLists.txt
+            sed -i '/include(cmake\/yaml.cmake)/d' CMakeLists.txt
+            sed -i '/include(cmake\/gtest.cmake)/d' CMakeLists.txt
+            
+            # Add the pre-fetched sources directly
+            sed -i '45i add_subdirectory(externals/pybind11-src)' CMakeLists.txt
+            sed -i '46i add_subdirectory(externals/yaml-cpp-src)' CMakeLists.txt
+            sed -i '47i add_subdirectory(externals/gtest-src)' CMakeLists.txt
           '';
-          
-          # Allow network access for external project downloads
-          __noChroot = true;
 
           nativeBuildInputs = with pkgs; [
             cmake
             pkg-config
             gcc
-            git  # Needed for CMake ExternalProject downloads
-            cacert  # Needed for SSL certificate verification
           ];
 
           buildInputs = with pkgs; [
