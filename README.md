@@ -54,9 +54,27 @@ See the [Docker Documentation](./docker/README.md) for detailed build instructio
 
 ## Installation
 
-### Docker Installation (Recommended)
+### Nix Installation (NixOS/Nix Users)
 
-The easiest way to get started is using Docker:
+For NixOS 25.11 or systems with Nix installed, the easiest way is using the Nix flake:
+
+```bash
+# Build and run
+nix build
+nix develop  # Enter development shell
+
+# Or use the helper script
+./nix-build.sh check   # Verify Nix setup
+./nix-build.sh build   # Build everything
+./nix-build.sh shell   # Enter dev shell
+./nix-build.sh test    # Test imports
+```
+
+See the [Nix Build Documentation](./NIX_BUILD.md) for detailed instructions.
+
+### Docker Installation (Recommended for Non-Nix Users)
+
+The easiest way to get started without Nix is using Docker:
 
 ```powershell
 # Build the container
@@ -71,7 +89,7 @@ See the [Docker Documentation](./docker/README.md) for detailed instructions, bu
 
 ### Manual Installation
 
-For manual installation, refer to the original [Flightmare Wiki](https://github.com/uzh-rpg/flightmare/wiki) and the [flightrl_modern README](./flightrl_modern/README.md).
+For manual installation, refer to the original [Flightmare Wiki](https://github.com/uzh-rpg/flightmare/wiki) and the [flightrl_v2 README](./flightrl_v2/README.md).
 
 ## Quick Start with flightrl_v2
 
