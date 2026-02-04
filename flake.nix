@@ -13,8 +13,11 @@
         pythonOverlay = final: prev: {
           python311 = prev.python311.override {
             packageOverrides = pyfinal: pyprev: {
-              # Disable checks for all Python packages
+              # Disable checks for problematic test dependencies
               pytest-doctestplus = pyprev.pytest-doctestplus.overridePythonAttrs (old: {
+                doCheck = false;
+              });
+              jaraco-test = pyprev.jaraco-test.overridePythonAttrs (old: {
                 doCheck = false;
               });
             };
