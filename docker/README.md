@@ -15,7 +15,7 @@ docker run -it --rm -p 10253:10253 flightmare:latest
 /root/verify_installation.sh
 
 # Inside container: run smoke test
-python3 /root/flightmare/flightrl_modern/examples/smoke_test.py
+python3 /root/flightmare/flightrl_v2/examples/01_basic_training.py --timesteps 1000
 ```
 
 ## Files

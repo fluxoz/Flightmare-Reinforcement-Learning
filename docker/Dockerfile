@@ -106,8 +106,8 @@ RUN if [ "$ENABLE_RL" = "1" ]; then \
     pip3 install --no-cache-dir \
     gymnasium>=0.28.0 stable-baselines3>=2.0.0 sb3-contrib>=2.0.0 \
     tensorboard>=2.12.0 tqdm imageio imageio-ffmpeg pytest pytest-cov && \
-    cd /root/flightmare/flightrl_modern && \
-    pip3 install --verbose . 2>&1 | tee /root/flightrl_modern_install.log; \
+    cd /root/flightmare/flightrl_v2 && \
+    pip3 install --verbose . 2>&1 | tee /root/flightrl_v2_install.log; \
     fi
 
 # ============================================================================
@@ -197,8 +197,8 @@ echo "[5/6] Stable-Baselines3..."
 python3 -c "import stable_baselines3 as sb3; print('✓ SB3', sb3.__version__)" 2>/dev/null || echo "⊘ SB3 not installed (RL disabled)"
 
 echo ""
-echo "[6/6] Flightrl Modern..."
-python3 -c "import flightrl_modern; print('✓ flightrl_modern', flightrl_modern.__version__)" 2>/dev/null || echo "⊘ flightrl_modern not installed (RL disabled)"
+echo "[6/6] Flightrl V2..."
+python3 -c "import flightrl_v2; print('✓ flightrl_v2', flightrl_v2.__version__)" 2>/dev/null || echo "⊘ flightrl_v2 not installed (RL disabled)"
 
 echo ""
 echo "=============================="
