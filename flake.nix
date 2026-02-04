@@ -65,12 +65,21 @@
             pybind11
           ];
 
+          # Pass CMake flags to find system packages
+          cmakeFlags = [
+            "-DEIGEN_FROM_SYSTEM=ON"
+            "-DBUILD_TESTS=OFF"
+            "-DBUILD_UNITY_BRIDGE_TESTS=OFF"
+            "-DBUILD_BENCH=OFF"
+          ];
+
           # Don't run tests during build
           doCheck = false;
           
           # Ensure the library can find dependencies
           preBuild = ''
             export NIX_CFLAGS_COMPILE="-I${pkgs.eigen}/include/eigen3 $NIX_CFLAGS_COMPILE"
+            export CMAKE_PREFIX_PATH="${pkgs.eigen}:${pkgs.opencv}:${pkgs.yaml-cpp}:${pkgs.zeromq}:$CMAKE_PREFIX_PATH"
           '';
 
           meta = with pkgs.lib; {

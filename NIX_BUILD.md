@@ -108,6 +108,21 @@ python 01_basic_training.py --timesteps 10000
 
 ## Troubleshooting
 
+### Network Access During Build
+
+If you see errors about network access or downloading dependencies during the build:
+
+The Nix build system is sandboxed and doesn't allow network access during builds. The flake is configured to use system-provided packages instead of downloading them. If you still encounter these issues:
+
+1. Make sure you're using a recent version of nixpkgs (the flake uses `nixos-unstable`)
+2. Check that all dependencies are properly listed in the flake
+3. The flake patches the CMakeLists.txt to prefer system packages
+
+If the build tries to download Eigen, pybind11, or yaml-cpp:
+- These should be provided by Nix
+- The `EIGEN_FROM_SYSTEM` CMake option is set to ON
+- Tests are disabled to avoid additional downloads
+
 ### Hash Mismatch for Python Packages
 
 If you encounter hash mismatches for `sb3-contrib` or `plotly`, you'll need to update the SHA256 hashes in `flake.nix`. Run:
