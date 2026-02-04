@@ -52,7 +52,7 @@
             eigen
             opencv
             zeromq
-            cppzmq
+            zmqpp
             yaml-cpp
             glog
           ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
@@ -163,7 +163,7 @@
             pkgs.eigen
             pkgs.opencv
             pkgs.zeromq
-            pkgs.cppzmq
+            pkgs.zmqpp
             pkgs.yaml-cpp
             pkgs.glog
             
