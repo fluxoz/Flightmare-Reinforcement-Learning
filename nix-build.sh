@@ -70,7 +70,7 @@ show_help() {
     echo "  shell      - Enter a development shell"
     echo "  run        - Run Python with Flightmare installed"
     echo "  train      - Run a quick training example"
-    echo "  test       - Test that packages can be imported"
+    echo "  test       - Validate installation (runs validate_install.py)"
     echo "  update     - Update flake.lock"
     echo "  clean      - Remove build artifacts (result symlinks)"
     echo "  help       - Show this help message"
@@ -141,27 +141,16 @@ cmd_test() {
     print_info "Testing package imports..."
     echo ""
     
-    nix develop --command bash -c '
-        echo "Testing flightgym import..."
-        python -c "import flightgym; print(\"✓ flightgym imported successfully\")"
-        
-        echo "Testing flightrl_v2 import..."
-        python -c "import flightrl_v2; print(f\"✓ flightrl_v2 version: {flightrl_v2.__version__}\")"
-        
-        echo ""
-        echo "Testing basic components..."
-        python -c "
-from flightrl_v2 import (
-    BaseFlightEnv, BaseTask, TaskConfig,
-    FlightEnvVec, make_flight_env_for_sb3,
-    HoverTask, TargetReachingTask
-)
-print(\"✓ All core components imported successfully\")
-"
-    '
+    nix develop --command python ./validate_install.py
     
-    echo ""
-    print_success "All tests passed!"
+    if [ $? -eq 0 ]; then
+        echo ""
+        print_success "All validation tests passed!"
+    else
+        echo ""
+        print_error "Some validation tests failed."
+        exit 1
+    fi
 }
 
 cmd_update() {
