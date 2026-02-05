@@ -86,6 +86,10 @@
             
             # Patch yaml-cpp's CMakeLists.txt to use CMake 3.12
             sed -i 's/cmake_minimum_required(VERSION 3\.4)/cmake_minimum_required(VERSION 3.12)/' externals/yaml-cpp-src/CMakeLists.txt
+            
+            # Patch yaml-cpp's emitterutils.cpp to add missing cstdint include
+            # This is required for modern GCC (15.2.0+) to recognize uint16_t, uint32_t
+            sed -i '13i#include <cstdint>' externals/yaml-cpp-src/src/emitterutils.cpp
           '';
           
           # Patch the setup.py to be more Nix-friendly
