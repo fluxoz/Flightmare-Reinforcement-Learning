@@ -56,3 +56,8 @@ CLAUDE.md
 *.pt
 *.pth
 REPOSITORY_SETUP_GUIDE.md
+
+# Nix
+result
+result-*
+.direnv/

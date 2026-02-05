@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12)
 
 project(flightlib VERSION 0.1.0)
 
@@ -13,7 +13,7 @@ option(BUILD_BENCH "Building the benchmark." OFF)
 option(ENABLE_FAST "Build with optimizations for speed" ON)
 option(ENABLE_BLAS "Build using BLAS and LAPACK libraries" OFF)
 option(ENABLE_PARALLEL "Build using openmp parallelization" ON)
-option(EIGEN_FROM_SYSTTEM "Use the system-provided Eigen" ON)
+option(EIGEN_FROM_SYSTEM "Use the system-provided Eigen" ON)
 set(
   EIGEN_ALTERNATIVE "" CACHE STRING
   "Path to alternative Eigen, autodownload if blank"
@@ -24,7 +24,7 @@ set(
 ################################################################################
 
 message(STATUS "======> Setup Dependencies")
-if(EIGEN_FROM_SYSTTEM)
+if(EIGEN_FROM_SYSTEM)
   find_package(Eigen3 3.3.4 QUIET)
   if(EIGEN3_FOUND)
     message(STATUS "Using system provided Eigen.")
